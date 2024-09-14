@@ -1,0 +1,21 @@
+main: ub.andrewyernau.UltimateBlood
+version: 1.0.0
+name: UltimateBlood
+author: Andrewyernau
+api-version: 1.13
+description: UltimateBleeding is a dynamic plugin that introduces realistic blood particles on mob and players, enhancing combat immersion. It also features a fully customizable bleeding mechanic, where players must heal themselves to stop continuous blood loss, adding a new layer of strategy and survival to the game.
+
+commands:
+  ultimatebleeding:
+    description: "Comando principal de UltimateBleeding"
+    usage: "/<command> [reload|gui]"
+  ub:
+    description: "Comando abreviado para UltimateBleeding"
+    usage: "/<command> [reload|gui]"
+permissions:
+  ub.reload:
+    description: Permiso para recargar la configuración de UltimateBleeding.
+    default: op
+  ub.toggle:
+    description: Permiso para abrir el menú GUI de UltimateBleeding.
+    default: op

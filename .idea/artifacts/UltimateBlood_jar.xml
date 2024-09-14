@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="UltimateBlood:jar">
+    <output-path>$PROJECT_DIR$/../../Server/plugins</output-path>
+    <root id="archive" name="UltimateBlood.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/../../Server/plugins/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="UltimateBlood" />
+    </root>
+  </artifact>
+</component>
