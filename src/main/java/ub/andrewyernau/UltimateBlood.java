@@ -80,14 +80,14 @@ public class UltimateBlood extends JavaPlugin implements Listener {
             }
         });
         Bukkit.addRecipe(recipe);
-        getLogger().info(this.getMessagesConfig().getString("messages.bandage_recipe_loaded", "Default message"));
+        getLogger().info(this.getMessagesConfig().getString("messages.bandage_recipe_loaded", "Bandage recipe loaded successfully!"));
     }
 
     public ItemStack createBandage() {
         ItemStack bandage = new ItemStack(Material.PAPER);
         ItemMeta meta = bandage.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(this.getMessagesConfig().getString("messages.bandage","§aVenda"));
+            meta.setDisplayName(this.getMessagesConfig().getString("messages.bandage","§aBandage"));
             NamespacedKey key = new NamespacedKey(this, "venda_autentica");
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "venda_verdadera");
             bandage.setItemMeta(meta);
@@ -125,10 +125,10 @@ public class UltimateBlood extends JavaPlugin implements Listener {
                     } catch (InvalidConfigurationException e) {
                         throw new RuntimeException(e);
                     }
-                    sender.sendMessage(this.getMessagesConfig().getString("messages.config_reloaded", "Default message"));
+                    sender.sendMessage(this.getMessagesConfig().getString("messages.config_reloaded", "UltimateBlood configuration reloaded"));
                     return true;
                 } else {
-                    sender.sendMessage(this.getMessagesConfig().getString("messages.no_permission", "Default message"));
+                    sender.sendMessage(this.getMessagesConfig().getString("messages.no_permission", "§cYou do not have permission to use this command."));
                     return false;
                 }
             }
@@ -139,11 +139,11 @@ public class UltimateBlood extends JavaPlugin implements Listener {
                         GUIMenu.openGUI(player);
                         return true;
                     } else {
-                        player.sendMessage(this.getMessagesConfig().getString("messages.no_permission", "Default message"));
+                        player.sendMessage(this.getMessagesConfig().getString("messages.no_permission", "§cYou do not have permission to use this command."));
                         return false;
                     }
                 } else {
-                    sender.sendMessage(this.getMessagesConfig().getString("messages.not_player", "Default message"));
+                    sender.sendMessage(this.getMessagesConfig().getString("messages.not_player", "§cThis command can only be used by players."));
                     return false;
                 }
             }

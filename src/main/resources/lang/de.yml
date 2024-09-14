@@ -13,3 +13,4 @@ messages:
   not_bleeding: "§cDu blutest nicht."
   bleeding_stopped: "§aBluten gestoppt!"
   bandage: "§aVerband"
+  no_bleeding: "§cEs gab keine Blutung zu stoppen"

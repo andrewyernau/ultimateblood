@@ -5,7 +5,7 @@ messages:
   not_player: "§cThis command can only be used by players."
   special_bandage: "§aSpecial Bandage"
   click_to_get_bandage: "Click to get the bandage"
-  worldborderapi_not_found: "WorldBorderAPI not found. Remember to install version 1.180.0"
+  worldborderapi_not_found: "WorldBorderAPI not found. Remember to install version 1.180.0 or above"
   red_screen_effect_error: "Error. Could not apply the red screen effect."
   severe_bleeding: "You are bleeding heavily!"
   bleeding_message: "You are bleeding, use a bandage or you will die!"
@@ -13,3 +13,4 @@ messages:
   not_bleeding: "§cYou are not bleeding."
   bleeding_stopped: "§aBleeding stopped!"
   bandage: "§aBandage"
+  no_bleeding: "§cThere was no bleeding to stop"

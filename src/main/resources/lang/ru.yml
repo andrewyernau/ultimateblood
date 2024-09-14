@@ -13,3 +13,4 @@ messages:
   not_bleeding: "§cВы не кровоточите."
   bleeding_stopped: "§aКровотечение остановлено!"
   bandage: "§aбинт"
+  no_bleeding: "§cКровотечения для остановки не было"

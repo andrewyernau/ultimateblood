@@ -33,9 +33,9 @@ public class GUIMenu implements Listener {
 
         ItemStack itemStack = new ItemStack(Material.PAPER);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.BOLD + plugin.getMessagesConfig().getString("messages.special_bandage", "Default message"));
+        itemMeta.setDisplayName(ChatColor.BOLD + plugin.getMessagesConfig().getString("messages.special_bandage", "§aSpecial Bandage"));
         ArrayList<String> Lore = new ArrayList<String>();
-        Lore.add(ChatColor.AQUA + plugin.getMessagesConfig().getString("messages.click_to_get_bandage", "Default message"));
+        Lore.add(ChatColor.AQUA + plugin.getMessagesConfig().getString("messages.click_to_get_bandage", "Click to get the bandage"));
         itemMeta.setLore(Lore);
         itemMeta.addEnchant(Enchantment.MENDING, 1, true);
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

@@ -19,10 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class BleedingEffectManagement implements Listener {
 
@@ -30,7 +27,7 @@ public class BleedingEffectManagement implements Listener {
     private final Random random = new Random();
     UltimateBlood plugin;
     private final NamespacedKey healingKey;
-    private final Map<Player, BukkitTask> bleedingTasks = new HashMap<>();
+    private final Map<UUID, BukkitTask> bleedingTasks = new HashMap<>();
 
 
     public BleedingEffectManagement(UltimateBlood javaPlugin) {
@@ -40,7 +37,7 @@ public class BleedingEffectManagement implements Listener {
         if (provider != null) {
             worldBorderApi = provider.getProvider();
         } else {
-            javaPlugin.getLogger().warning(plugin.getMessagesConfig().getString("messages.worldborderapi_not_found", "Default message"));
+            javaPlugin.getLogger().warning(plugin.getMessagesConfig().getString("messages.worldborderapi_not_found", "WorldBorderAPI not found. Remember to install version 1.180.0 or above"));
             javaPlugin.getServer().getPluginManager().disablePlugin(javaPlugin);
         }
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -50,7 +47,7 @@ public class BleedingEffectManagement implements Listener {
         if (worldBorderApi != null) {
             worldBorderApi.sendRedScreenForSeconds(player, durationInSeconds, plugin);
         } else {
-            plugin.getLogger().warning(plugin.getMessagesConfig().getString("messages.red_screen_effect_error", "Default message"));
+            plugin.getLogger().warning(plugin.getMessagesConfig().getString("messages.red_screen_effect_error", "Error. Could not apply the red screen effect."));
         }
     }
 
@@ -95,10 +92,20 @@ public class BleedingEffectManagement implements Listener {
     }
 
     private void startBleeding(Player player, boolean isHeavyBleed) {
+        UUID playerId = player.getUniqueId();
+
+        if (bleedingTasks.containsKey(playerId)) {
+            BukkitTask previousTask = bleedingTasks.get(playerId);
+            if (previousTask != null) {
+                previousTask.cancel();
+            }
+        }
+
         double damage = isHeavyBleed ? plugin.getConfig().getDouble("heavy-bleeding-damage")
                 : plugin.getConfig().getDouble("bleeding-damage");
         int duration = plugin.getConfig().getInt("bleeding-duration");
-        String message = isHeavyBleed ? plugin.getMessagesConfig().getString("messages.severe_bleeding", "Default message") : plugin.getMessagesConfig().getString("messages.bleeding_message", "Default message");
+        String message = isHeavyBleed ? plugin.getMessagesConfig().getString("messages.severe_bleeding", "You are bleeding heavily!")
+                : plugin.getMessagesConfig().getString("messages.bleeding_message", "You are bleeding, use a bandage or you will die!");
         player.sendMessage("§c" + message);
         applyRedScreenEffect(player, duration / 20);
 
@@ -109,36 +116,42 @@ public class BleedingEffectManagement implements Listener {
             public void run() {
                 if (ticks >= duration || player.isDead() || !player.isOnline()) {
                     cancel();
-                    bleedingTasks.remove(player);
+                    bleedingTasks.remove(playerId);
                     return;
                 }
-                if(ticks%80==0){
+                if (ticks % 80 == 0) {
                     player.damage(damage);
                 }
 
-                ticks ++;
+                ticks++;
             }
         }.runTaskTimer(plugin, 0, 1);
 
-        bleedingTasks.put(player, task);
+        bleedingTasks.compute(player.getUniqueId(), (uuid, oldTask) -> {
+            if (oldTask != null) {
+                oldTask.cancel();
+            }
+            return task;
+        });
     }
 
     @EventHandler
     public void onPlayerUseBandage(PlayerInteractEvent e) {
         Player player = e.getPlayer();
+        UUID playerId = player.getUniqueId();
         ItemStack item = e.getItem();
 
         if (item != null && item.getType() == Material.PAPER) {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 if (meta.getPersistentDataContainer().has(healingKey, PersistentDataType.STRING)) {
-                    if (bleedingTasks.containsKey(player)) {
+                    if (bleedingTasks.containsKey(playerId)) {
                         e.setCancelled(true);
-                        player.sendMessage(plugin.getMessagesConfig().getString("messages.bandage_used", "Default message"));
+                        player.sendMessage(plugin.getMessagesConfig().getString("messages.bandage_used", "§aYou have used a bandage and stopped bleeding."));
                         removeBleeding(player);
                         item.setAmount(item.getAmount() - 1);
                     } else {
-                        player.sendMessage(plugin.getMessagesConfig().getString("messages.not_bleeding", "Default message"));
+                        player.sendMessage(plugin.getMessagesConfig().getString("messages.not_bleeding", "§cYou are not bleeding."));
                     }
                 }
             }
@@ -146,19 +159,18 @@ public class BleedingEffectManagement implements Listener {
     }
 
     private void removeBleeding(Player player) {
-        BukkitTask task = bleedingTasks.remove(player);
+        UUID playerId = player.getUniqueId();
+        BukkitTask task = bleedingTasks.remove(playerId);
         if (task != null) {
             task.cancel();
-            player.sendMessage("§cSangrado detenido");
-        } else {
-            player.sendMessage("§cNo había sangrado para detener");
+            player.sendMessage(plugin.getMessagesConfig().getString("messages.bleeding_stopped", "§aBleeding stopped!"));
         }
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent e) {
         Player player = e.getPlayer();
-        plugin.getLogger().info("Jugador resucitado: " + player.getName());
+        //plugin.getLogger().info("Jugador resucitado: " + player.getName());
         removeBleeding(player);
     }
 
@@ -172,7 +184,7 @@ public class BleedingEffectManagement implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         Player player = e.getEntity();
-        plugin.getLogger().info("Jugador murió: " + player.getName());
+        //plugin.getLogger().info("Jugador murió: " + player.getName());
         removeBleeding(player);
     }
 }
