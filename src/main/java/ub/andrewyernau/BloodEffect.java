@@ -110,16 +110,26 @@ public class BloodEffect implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
-        Entity entity = e.getEntity();
-        EntityType entityType = entity.getType();
-        if (this.plugin.getConfig().getBoolean("enable-blood-particles") && entityBloodMap.containsKey(entityType)) {
-            String configPath = entityBloodMap.get(entityType);
-            Material bloodMaterial = Material.getMaterial(this.plugin.getConfig().getString(configPath));
-
-            if (bloodMaterial != null) {
-                entity.getLocation().getWorld().playEffect(entity.getLocation().add(0.0D, 0.5D, 0.0D),
-                        Effect.STEP_SOUND, bloodMaterial);
+        try {
+            Entity entity = e.getEntity();
+            EntityType entityType = entity.getType();
+            if (this.plugin.getConfig().getBoolean("enable-blood-particles") && entityBloodMap.containsKey(entityType)) {
+                String configPath = entityBloodMap.get(entityType);
+                Material bloodMaterial = Material.getMaterial(this.plugin.getConfig().getString(configPath));
+                if (bloodMaterial != null) {
+                    entity.getLocation().getWorld().playEffect(entity.getLocation().add(0.0D, 0.5D, 0.0D),
+                            Effect.STEP_SOUND, bloodMaterial);
+                } else {
+                    plugin.getLogger().warning("Blood material for " + entityType + " is null or not configured properly.");
+                }
             }
+        } catch (IllegalArgumentException ex) {
+            plugin.getLogger().warning("Some EntityTypes are not available in this Minecraft version. This might be fine if you aren't using root version");
+        } catch (NullPointerException ex) {
+            plugin.getLogger().warning("An entity or material could not be found or is null.");
+        } catch (Exception ex) {
+            plugin.getLogger().severe("An unexpected error occurred while handling entity damage: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 }
