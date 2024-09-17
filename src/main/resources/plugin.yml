@@ -7,11 +7,14 @@ description: UltimateBleeding is a dynamic plugin that introduces realistic bloo
 
 commands:
   ultimatebleeding:
-    description: "Comando principal de UltimateBleeding"
-    usage: "/<command> [reload|gui]"
+    description: ""
+    usage: "/<command> [reload|gui|givebandage]"
   ub:
-    description: "Comando abreviado para UltimateBleeding"
-    usage: "/<command> [reload|gui]"
+    description: ""
+    usage: "/<command> [reload|gui|givebandage]"
+  givebandage:
+    description: "Gives a special bandage to the player."
+    usage: "/ub givebandage"
 permissions:
   ub.reload:
     description: Permiso para recargar la configuración de UltimateBleeding.

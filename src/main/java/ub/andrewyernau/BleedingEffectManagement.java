@@ -30,6 +30,7 @@ public class BleedingEffectManagement implements Listener {
     private final Map<UUID, BukkitTask> bleedingTasks = new HashMap<>();
 
 
+
     public BleedingEffectManagement(UltimateBlood javaPlugin) {
         this.plugin = javaPlugin;
         this.healingKey = new NamespacedKey(plugin, "venda_autentica");

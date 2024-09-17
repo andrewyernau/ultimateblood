@@ -147,6 +147,13 @@ public class UltimateBlood extends JavaPlugin implements Listener {
                     return false;
                 }
             }
+            if (args.length > 0 && args[0].equalsIgnoreCase("givebandage")) {
+
+                Player player = (Player) sender;
+                if (player.hasPermission("ub.toggle")) {
+                    player.getInventory().addItem(this.createBandage());
+                }
+            }
         }
         return false;
     }
