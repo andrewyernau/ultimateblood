@@ -1,6 +1,7 @@
 package ub.andrewyernau;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -26,7 +27,8 @@ public class UltimateBlood extends JavaPlugin implements Listener {
     private static UltimateBlood instance;
     private FileConfiguration messagesConfig;
     private String language;
-    File messagesFile ;
+    File messagesFile;
+
     @Override
     public void onEnable() {
 
@@ -52,8 +54,6 @@ public class UltimateBlood extends JavaPlugin implements Listener {
         getLogger().info("Using language: " + language);
         getLogger().info("Supported languages: de, en, es, fr, ru. Modify your language in the config.yml file and reload the plugin");
         messagesConfig = YamlConfiguration.loadConfiguration(messagesFile);
-
-
 
 
         new BloodEffect(this);
@@ -87,7 +87,7 @@ public class UltimateBlood extends JavaPlugin implements Listener {
         ItemStack bandage = new ItemStack(Material.PAPER);
         ItemMeta meta = bandage.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(this.getMessagesConfig().getString("messages.bandage","§aBandage"));
+            meta.setDisplayName(this.getMessagesConfig().getString("messages.bandage", "§aBandage"));
             NamespacedKey key = new NamespacedKey(this, "venda_autentica");
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "venda_verdadera");
             bandage.setItemMeta(meta);
@@ -106,6 +106,7 @@ public class UltimateBlood extends JavaPlugin implements Listener {
             args1.add("help");
             args1.add("reload");
             args1.add("gui");
+            args1.add("givebandage");
             return args1;
         }
         return null;
@@ -149,10 +150,21 @@ public class UltimateBlood extends JavaPlugin implements Listener {
             }
             if (args.length > 0 && args[0].equalsIgnoreCase("givebandage")) {
 
-                Player player = (Player) sender;
-                if (player.hasPermission("ub.toggle")) {
-                    player.getInventory().addItem(this.createBandage());
+                if (args.length > 1) {
+                    Player target = Bukkit.getPlayer(args[1]);
+                    if (target != null && target.isOnline()) {
+                        ItemStack bandage = createBandage();
+                        target.getInventory().addItem(bandage);
+                        return true;
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Player not found or not online.");
+                        return false;
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.RED + "Usage: /ub givebandage <player>");
+                    return false;
                 }
+
             }
         }
         return false;

@@ -37,7 +37,7 @@ bandage-recipe:
     P: PAPER
 
 # Disable bleeding mechanics in these worlds
-disable-worlds:
+disabled-worlds:
   - world_nether
   - world_the_end
   - spawn_world

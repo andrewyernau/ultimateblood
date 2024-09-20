@@ -30,7 +30,6 @@ public class BleedingEffectManagement implements Listener {
     private final Map<UUID, BukkitTask> bleedingTasks = new HashMap<>();
 
 
-
     public BleedingEffectManagement(UltimateBlood javaPlugin) {
         this.plugin = javaPlugin;
         this.healingKey = new NamespacedKey(plugin, "venda_autentica");
@@ -57,13 +56,12 @@ public class BleedingEffectManagement implements Listener {
         if (!(e.getEntity() instanceof Player)) return;
 
         Player player = (Player) e.getEntity();
-        String worldName = player.getWorld().getName();
-        List<String> blacklistedWorlds = plugin.getConfig().getStringList("disable-world");
+        String worldName = player.getLocation().getWorld().getName();
+        List<String> blacklistedWorlds = plugin.getConfig().getStringList("disabled-worlds");
 
         if (blacklistedWorlds.contains(worldName)) {
             return;
         }
-
         double health = player.getHealth();
         double maxHealth = player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).getValue();
         double healthPercentage = (health / maxHealth) * 100;
@@ -78,6 +76,7 @@ public class BleedingEffectManagement implements Listener {
                 startBleeding(player, true);
             }
         }
+
     }
 
     private double calculateBleedChance(double healthPercentage) {
