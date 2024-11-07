@@ -1,7 +1,7 @@
 ##############################################
 #      UltimateBlood Configuration File      #
 ##############################################
-# Language (supported right now: en, es, de, fr, ru)
+# Language (supported right now: en, es, de, fr, ru, zhcn)
 language: "es"
 # Enable or disable blood particles
 enable-blood-particles: true
@@ -41,6 +41,9 @@ disabled-worlds:
   - world_nether
   - world_the_end
   - spawn_world
+
+disabled-particles-worlds:
+  - world_nether
 
 #Mob configuration
 player:

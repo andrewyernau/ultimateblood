@@ -52,7 +52,7 @@ public class UltimateBlood extends JavaPlugin implements Listener {
             saveResource("lang/" + language + ".yml", true);
         }
         getLogger().info("Using language: " + language);
-        getLogger().info("Supported languages: de, en, es, fr, ru. Modify your language in the config.yml file and reload the plugin");
+        getLogger().info("Supported languages: de, en, es, fr, ru, zhcn. Modify your language in the config.yml file and reboot your server.");
         messagesConfig = YamlConfiguration.loadConfiguration(messagesFile);
 
 

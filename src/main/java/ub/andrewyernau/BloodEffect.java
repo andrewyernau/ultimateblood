@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -121,6 +122,14 @@ public class BloodEffect implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
+
+        Entity worldEntity = e.getEntity();
+        String worldName = worldEntity.getLocation().getWorld().getName();
+        List<String> blacklistedWorlds = plugin.getConfig().getStringList("disabled-particles-worlds");
+
+        if (blacklistedWorlds.contains(worldName)) {
+            return;
+        }
         try {
             Entity entity = e.getEntity();
             EntityType entityType = entity.getType();
@@ -139,7 +148,7 @@ public class BloodEffect implements Listener {
         } catch (NullPointerException ex) {
             plugin.getLogger().warning("An entity or material could not be found or is null.");
         } catch (Exception ex) {
-            plugin.getLogger().severe("An unexpected error o2ccurred while handling entity damage: " + ex.getMessage());
+            plugin.getLogger().severe("An unexpected error occurred while handling entity damage: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
