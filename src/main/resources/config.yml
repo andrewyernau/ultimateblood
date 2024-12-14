@@ -5,6 +5,8 @@
 language: "es"
 # Enable or disable blood particles
 enable-blood-particles: true
+#Enable or disable chat messages
+enable-messages: true
 
 # Enable or disable bleeding effect
 bleeding: true

@@ -106,7 +106,10 @@ public class BleedingEffectManagement implements Listener {
         int duration = plugin.getConfig().getInt("bleeding-duration");
         String message = isHeavyBleed ? plugin.getMessagesConfig().getString("messages.severe_bleeding", "You are bleeding heavily!")
                 : plugin.getMessagesConfig().getString("messages.bleeding_message", "You are bleeding, use a bandage or you will die!");
-        player.sendMessage("§c" + message);
+        if (plugin.isEnableMessages()) {
+            player.sendMessage("§c" + message);
+        }
+
         applyRedScreenEffect(player, duration / 20);
 
         BukkitTask task = new BukkitRunnable() {
@@ -147,11 +150,15 @@ public class BleedingEffectManagement implements Listener {
                 if (meta.getPersistentDataContainer().has(healingKey, PersistentDataType.STRING)) {
                     if (bleedingTasks.containsKey(playerId)) {
                         e.setCancelled(true);
-                        player.sendMessage(plugin.getMessagesConfig().getString("messages.bandage_used", "§aYou have used a bandage and stopped bleeding."));
+                        if (plugin.isEnableMessages()) {
+                            player.sendMessage(plugin.getMessagesConfig().getString("messages.bandage_used", "§aYou have used a bandage and stopped bleeding."));
+                        }
                         removeBleeding(player);
                         item.setAmount(item.getAmount() - 1);
                     } else {
-                        player.sendMessage(plugin.getMessagesConfig().getString("messages.not_bleeding", "§cYou are not bleeding."));
+                        if (plugin.isEnableMessages()) {
+                            player.sendMessage(plugin.getMessagesConfig().getString("messages.not_bleeding", "§cYou are not bleeding."));
+                        }
                     }
                 }
             }
@@ -163,7 +170,9 @@ public class BleedingEffectManagement implements Listener {
         BukkitTask task = bleedingTasks.remove(playerId);
         if (task != null) {
             task.cancel();
-            player.sendMessage(plugin.getMessagesConfig().getString("messages.bleeding_stopped", "§aBleeding stopped!"));
+            if (plugin.isEnableMessages()) {
+                player.sendMessage(plugin.getMessagesConfig().getString("messages.bleeding_stopped", "§aBleeding stopped!"));
+            }
         }
     }
 

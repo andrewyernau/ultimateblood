@@ -28,6 +28,7 @@ public class UltimateBlood extends JavaPlugin implements Listener {
     private FileConfiguration messagesConfig;
     private String language;
     File messagesFile;
+    private boolean enableMessages;
 
     @Override
     public void onEnable() {
@@ -61,6 +62,15 @@ public class UltimateBlood extends JavaPlugin implements Listener {
         new BleedingEffectManagement(this);
         loadBandageRecipe();
     }
+
+    public void loadConfigValues() {
+        enableMessages = getConfig().getBoolean("enable-messages", true);
+    }
+
+    public boolean isEnableMessages() {
+        return enableMessages;
+    }
+
 
     public FileConfiguration getMessagesConfig() {
         return messagesConfig;
@@ -140,7 +150,9 @@ public class UltimateBlood extends JavaPlugin implements Listener {
                         GUIMenu.openGUI(player);
                         return true;
                     } else {
-                        player.sendMessage(this.getMessagesConfig().getString("messages.no_permission", "§cYou do not have permission to use this command."));
+                        if (this.isEnableMessages()) {
+                            player.sendMessage(this.getMessagesConfig().getString("messages.no_permission", "§cYou do not have permission to use this command."));
+                        }
                         return false;
                     }
                 } else {
@@ -149,23 +161,40 @@ public class UltimateBlood extends JavaPlugin implements Listener {
                 }
             }
             if (args.length > 0 && args[0].equalsIgnoreCase("givebandage")) {
+                Player target;
 
                 if (args.length > 1) {
-                    Player target = Bukkit.getPlayer(args[1]);
-                    if (target != null && target.isOnline()) {
-                        ItemStack bandage = createBandage();
-                        target.getInventory().addItem(bandage);
-                        return true;
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Player not found or not online.");
+                    target = Bukkit.getPlayer(args[1]);
+                    if (target == null || !target.isOnline()) {
+                        if (this.isEnableMessages()) {
+                            sender.sendMessage(ChatColor.RED + "Player not found or not online.");
+                        }
+
                         return false;
                     }
-                } else {
-                    sender.sendMessage(ChatColor.RED + "Usage: /ub givebandage <player>");
-                    return false;
                 }
 
+                else {
+                    if (sender instanceof Player) {
+                        target = (Player) sender;
+                    } else {
+                        if (this.isEnableMessages()) {
+                            sender.sendMessage(ChatColor.RED + "Only players can execute this command without specifying a target.");
+                        }
+                        return false;
+                    }
+                }
+
+                ItemStack bandage = createBandage();
+                target.getInventory().addItem(bandage);
+                if (this.isEnableMessages()) {
+                    target.sendMessage(ChatColor.GREEN + "You have received a bandage!");
+                    sender.sendMessage(ChatColor.GREEN + "Bandage given to " + target.getName() + ".");
+                }
+
+                return true;
             }
+
         }
         return false;
     }
