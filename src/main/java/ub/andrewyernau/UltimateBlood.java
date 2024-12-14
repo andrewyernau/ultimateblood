@@ -32,47 +32,64 @@ public class UltimateBlood extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-
         instance = this;
 
+
         saveDefaultConfig();
-        saveLangFile("lang/en.yml");
-        saveLangFile("lang/es.yml");
-        saveLangFile("lang/de.yml");
-        saveLangFile("lang/fr.yml");
-        saveLangFile("lang/ru.yml");
-
+        reloadConfig();
         getConfig().options().copyDefaults(true);
+        saveConfig();
 
-        FileConfiguration config = getConfig();
-        language = config.getString("language", "en");
+        loadDefaultLangFiles();
+        loadLanguageFile();
 
-        messagesFile = new File(getDataFolder(), "lang/" + language + ".yml");
-
-        if (!messagesFile.exists()) {
-            saveResource("lang/" + language + ".yml", true);
-        }
-        getLogger().info("Using language: " + language);
-        getLogger().info("Supported languages: de, en, es, fr, ru, zhcn. Modify your language in the config.yml file and reboot your server.");
-        messagesConfig = YamlConfiguration.loadConfiguration(messagesFile);
-
+        loadConfigValues();
 
         new BloodEffect(this);
         new GUIMenu(this);
         new BleedingEffectManagement(this);
         loadBandageRecipe();
-        loadConfigValues();
     }
+
+    public void loadConfigValues() {
+        enableMessages = this.instance.getConfig().getBoolean("messages");
+        getLogger().info("Messages enabled: " + enableMessages);
+    }
+
+    private void loadDefaultLangFiles() {
+        saveLangFile("lang/en.yml");
+        saveLangFile("lang/es.yml");
+        saveLangFile("lang/de.yml");
+        saveLangFile("lang/fr.yml");
+        saveLangFile("lang/ru.yml");
+    }
+
+    private void loadLanguageFile() {
+        String lang = getConfig().getString("language", "en");
+        if (lang == null || lang.isEmpty()) {
+            getLogger().warning("Language not specified in config.yml. Defaulting to 'en'.");
+            lang = "en";
+        }
+
+        // Asegura que el archivo de idioma existe
+        messagesFile = new File(getDataFolder(), "lang/" + lang + ".yml");
+        if (!messagesFile.exists()) {
+            getLogger().warning("Language file not found for '" + lang + "'. Defaulting to 'en'.");
+            lang = "en";
+            messagesFile = new File(getDataFolder(), "lang/en.yml");
+            saveResource("lang/en.yml", false);
+        }
+
+        getLogger().info("Using language: " + lang);
+        messagesConfig = YamlConfiguration.loadConfiguration(messagesFile);
+    }
+
 
     private void saveLangFile(String path) {
         File file = new File(getDataFolder(), path);
         if (!file.exists()) {
             saveResource(path, false);
         }
-    }
-
-    public void loadConfigValues() {
-        enableMessages = getConfig().getBoolean("enable-messages", true);
     }
 
     public boolean isEnableMessages() {
@@ -115,7 +132,6 @@ public class UltimateBlood extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        saveConfig();
     }
 
     public List<String> onTabComplete(CommandSender sender, Command cmd, String CommandLable, String[] args) {
